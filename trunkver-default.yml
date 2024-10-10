@@ -1,0 +1,9 @@
+patterns:
+  bump_major_marker: '\+(breaking|major)\b'
+  bump_minor_marker: '\+(feature|minor)\b'
+  bump_patch_marker: '\+(fix|patch|docs|ci)\b'
+  skip_bump_marker: '\+(none|skip)\b'
+  semver_tag: '[vV]?([\d]+)\.([\d]+)\.([\d]+)\.?([\d]+)?'
+  main_branch: '^master$|^main$'
+  feature_branch: '^feature[/-][a-z]{2,}[a-zA-Z0-9._-]+$'
+  pr_branch: '^(pull|pull\-requests|pr)[/-]'

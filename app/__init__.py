@@ -1,72 +1,62 @@
-import re
-from datetime import datetime
-from git import Repo
-from .application import SemanticVersion
+import logging
 
-MAIN_BRANCH_REGEX = r"^master$|^main$"
-FEATURE_BRANCH_REGEX = r"^feature[/-][a-z]{2,}[a-zA-Z0-9._-]+$"
-PR_BRANCH_REGEX = r"^(pull|pull\-requests|pr)[/-]"
+from argparse import ArgumentParser, Namespace
+from os import getenv
+from .git_reader import GitRepositoryReader
+from .git_repository import GitRepository
+from .config import config
 
-MAJOR_REGEX = r"\+(breaking|major)\b"
-MINOR_REGEX = r"\+(feature|minor)\b"
-PATCH_REGEX = r"\+(fix|patch|docs|ci)\b"
-SKIP_REGEX = r"\+(none|skip)\b"
 
-SEMVER_TAG_REGEX = r"[vV]?([\d]+.[\d]+.[\d]+)"
+def setup_logger():
+    LOG_LEVEL = getenv("LOG_LEVEL", default=logging.INFO)
+    logging.basicConfig(
+        format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
+        level=LOG_LEVEL,
+    )
 
-branch_name = "feature/init-repo"
-is_feature_branch = re.search(FEATURE_BRANCH_REGEX, branch_name)
 
-def get_semver(path) -> SemanticVersion:
-    repo = Repo(path)
+def get_cli_args() -> Namespace:
+    parser = ArgumentParser(description="Calculates repository version.")
 
-    commits_to_read = []
-    latest_semver_tag = None
+    parser.add_argument(
+        "--path",
+        "-p",
+        default=config.DEFAULT_PATH,
+        type=str,
+        help="Path of GIT repository",
+    )
+    parser.add_argument(
+        "--init",
+        "-i",
+        action="store_true",
+        help="Generate trunkver configuration file (file will be created at working directory or, if --path argument is set, --path will be used as target path instead)",
+    )
+    parser.add_argument(
+        "--debug", action="store_true", help="Enter debug mode (more log messages)"
+    )
 
-    for cmt in repo.iter_commits():
-        cur_cmt = {
-            "ref": cmt.hexsha,
-            "dt": cmt.committed_datetime,
-            "msg": cmt.message,
-            "tags": [tag.name for tag in repo.tags if tag.commit.hexsha == cmt.hexsha]
-        }
-        
-        commits_to_read.append(cur_cmt)
-        if len(cur_cmt["tags"]) > 0:
-            latest_semver_tag = next((re.search(SEMVER_TAG_REGEX, tag).group(1) for tag in cur_cmt["tags"] if re.search(SEMVER_TAG_REGEX, tag)), None)
-            if not latest_semver_tag:
-                continue
-            commits_to_read.remove(cur_cmt)
-            print(f"Most recent git tag: {latest_semver_tag}")
-            break
-  
-    semver = None
-    if latest_semver_tag:
-        splitted = latest_semver_tag.split(".")
-        semver = SemanticVersion(major=splitted[0], minor=splitted[1], patch=splitted[2])
-    else:
-        semver = SemanticVersion()
+    return parser.parse_args()
 
-    print(f"Number of commits to read: {len(commits_to_read)}")
-    if len(commits_to_read) == 0:
-        return semver
-    
-    commits_to_read.sort(key=lambda cmt: cmt["dt"])
-    for cmt in commits_to_read:
-        print(f"Current version: {semver}")
-        print(f"Current commit message: '{cmt['msg']}'")
 
-        if re.search(MAJOR_REGEX, cmt["msg"]):
-            print(f"Bumping major version")
-            semver.bump_major()
-        elif re.search(MINOR_REGEX, cmt["msg"]):
-            print(f"Bumping minor version")
-            semver.bump_minor()
-        elif re.search(PATCH_REGEX, cmt["msg"]):
-            print(f"Bumping patch version")
-            semver.bump_patch()
-        else:
-            print(f"Bumping commits version")
-            semver.bump_commits()
+def run():
+    setup_logger()
+    logger = logging.getLogger(__name__)
 
-    return semver
+    args = get_cli_args()
+
+    logger.debug(args)
+
+    if args.init:
+        config.generate_config_file()
+
+    config.load(path=args.path)
+
+    git_repo_reader = GitRepositoryReader(args.path)
+    repo = GitRepository(
+        branch_name=git_repo_reader.read_branch_name(),
+        commit_lines=git_repo_reader.read_commit_lines(
+            sep=config.COMMIT_FIELD_SEPARATOR
+        ),
+    )
+
+    print(repo.version)
