@@ -1,6 +1,5 @@
 import os
 from setuptools import setup, find_packages
-from app import Gi
 
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
@@ -9,7 +8,7 @@ with open("requirements.txt", "r", encoding="utf-8") as fh:
 
 setup(
     name="trunkver",
-    version="0.0.1.7",
+    version="0.0.1.8",
     author="Tarik Porto",
     author_email="tariklemos1511@gmail.com",
     license="GNU GPLv3",
