@@ -1,6 +1,7 @@
 import logging
 
 from argparse import ArgumentParser, Namespace
+from importlib.metadata import version
 from os import getenv
 from .git_reader import GitRepositoryReader
 from .git_repository import GitRepository
@@ -34,6 +35,9 @@ def get_cli_args() -> Namespace:
         help="Generate trunkver configuration file (file will be created at working directory or, if --path argument is set, --path will be used as target path instead)",
     )
     parser.add_argument(
+        "--version", "-v", action="version", version=version("trunkver")
+    )
+    parser.add_argument(
         "--debug", action="store_true", help="Enter debug mode (more log messages)"
     )
 
@@ -42,6 +46,7 @@ def get_cli_args() -> Namespace:
 
 def run():
     args = get_cli_args()
+
     setup_logger(debug_flag=args.debug)
     logger = logging.getLogger(__name__)
 
