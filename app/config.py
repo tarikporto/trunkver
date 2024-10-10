@@ -65,12 +65,12 @@ class Config:
         with open(self.file_path, "r") as stream:
             return yaml.safe_load(stream)
 
-    def _transform_regex(self):
-        pass
+    @property
+    def file_path(self):
+        return f"{self.path}/{ConfigFile.NAME}"
 
-    def load(self, path="."):
+    def load(self, path=DEFAULT_PATH):
         self.path = path
-        self.file_path = f"{self.path}/{ConfigFile.NAME}"
         config_default = ConfigFile.DEFAULT.copy()
 
         logger.debug("Default config:")
@@ -98,7 +98,8 @@ class Config:
 
         logger.debug(self.regex_patterns)
 
-    def generate_config_file(self):
+    def generate_config_file(self, path=DEFAULT_PATH):
+        self.path = path
         with io.open(self.file_path, "w", encoding="utf8") as outfile:
             yaml.dump(
                 ConfigFile.DEFAULT,
@@ -106,7 +107,7 @@ class Config:
                 default_flow_style=False,
                 allow_unicode=True,
             )
-        print(f"Created '{self.file_path}'")
+        print(f"Created file '{self.file_path}'")
 
 
 config = Config()

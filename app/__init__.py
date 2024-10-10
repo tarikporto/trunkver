@@ -7,8 +7,10 @@ from .git_repository import GitRepository
 from .config import config
 
 
-def setup_logger():
-    LOG_LEVEL = getenv("LOG_LEVEL", default=logging.INFO)
+def setup_logger(debug_flag=False):
+    LOG_LEVEL = (
+        logging.DEBUG if debug_flag else getenv("LOG_LEVEL", default=logging.WARNING)
+    )
     logging.basicConfig(
         format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
         level=LOG_LEVEL,
@@ -39,15 +41,15 @@ def get_cli_args() -> Namespace:
 
 
 def run():
-    setup_logger()
-    logger = logging.getLogger(__name__)
-
     args = get_cli_args()
+    setup_logger(debug_flag=args.debug)
+    logger = logging.getLogger(__name__)
 
     logger.debug(args)
 
     if args.init:
-        config.generate_config_file()
+        config.generate_config_file(path=args.path)
+        return
 
     config.load(path=args.path)
 

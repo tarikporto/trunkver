@@ -7,7 +7,7 @@ with open("requirements.txt", "r", encoding="utf-8") as fh:
     requirements = fh.read()
 setup(
     name="trunkver",
-    version="0.0.1.2",
+    version="0.0.1.6",
     author="Tarik Porto",
     author_email="tariklemos1511@gmail.com",
     license="GNU GPLv3",
@@ -25,6 +25,6 @@ setup(
     ],
     entry_points="""
         [console_scripts]
-        trunkver=app
+        trunkver=app:run
     """,
 )
