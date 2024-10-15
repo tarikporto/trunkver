@@ -1,26 +1,36 @@
 import pytest
-from tests import get_path, LogFile, get_log_files
+from tests import get_log_files, load_test_config, StaticLogFile
 from trunkver.config import config
 from trunkver.git_repository import GitRepository
 
 
-class TestGitRepository:
-    def test_git_repository_semver(self):
+@pytest.fixture
+def git_repo_semver_main():
+    log_files = get_log_files(StaticLogFile.SEMVER)
+    load_test_config()
+    return GitRepository(branch_name="main", commit_lines=log_files)
 
-        expected_version = "0.2.1.0"
-        log_files = get_log_files(LogFile.SEMVER)
 
-        config.load(get_path())
-        git_repo = GitRepository(branch_name="main", commit_lines=log_files)
+@pytest.fixture
+def git_repo_gitversion_main():
+    log_files = get_log_files(StaticLogFile.GITVERSION_TEST)
+    load_test_config()
+    return GitRepository(branch_name="main", commit_lines=log_files)
 
-        assert git_repo.version == expected_version
 
-    def test_git_repository_gitversion(self):
+def test_git_repository_semver(git_repo_semver_main):
 
-        expected_version = "0.6.26.2"
-        log_files = get_log_files(LogFile.GITVERSION_TEST)
+    expected_version = "0.2.1.0"
 
-        config.load(get_path())
-        git_repo = GitRepository(branch_name="main", commit_lines=log_files)
+    git_repo = git_repo_semver_main
 
-        assert git_repo.version == expected_version
+    assert git_repo.version == expected_version
+
+
+def test_git_repository_gitversion(git_repo_gitversion_main):
+
+    expected_version = "0.6.26.2"
+
+    git_repo = git_repo_gitversion_main
+
+    assert git_repo.version == expected_version

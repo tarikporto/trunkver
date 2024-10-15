@@ -1,66 +1,60 @@
 import pytest
-from tests import get_path, LogFile, get_log_files
-from trunkver.config import config
 from trunkver.semantic_version import SemanticVersion
 
 
-class TestSemanticVersion:
-    def test_semantic_version_bump_major(self):
+@pytest.fixture
+def starting_version():
+    return SemanticVersion(
+        major=0,
+        minor=2,
+        patch=1,
+        commits=0,
+    )
 
-        expected_version = "2.0.0.0"
 
-        semver = SemanticVersion(
-            major=0,
-            minor=2,
-            patch=1,
-            commits=0,
-        )
+def test_semantic_version_bump_major(starting_version):
 
-        semver.bump_major()
-        semver.bump_minor()
-        semver.bump_patch()
-        semver.bump_commits()
-        semver.bump_major()
+    expected_version = "2.0.0.0"
 
-        assert str(semver) == expected_version
+    semver = starting_version
 
-    def test_semantic_version_bump_minor(self):
+    semver.bump_major()
+    semver.bump_minor()
+    semver.bump_patch()
+    semver.bump_commits()
+    semver.bump_major()
 
-        expected_version = "0.4.1.0"
+    assert str(semver) == expected_version
 
-        semver = SemanticVersion(
-            major=0,
-            minor=2,
-            patch=1,
-            commits=0,
-        )
 
-        semver.bump_minor()
-        semver.bump_patch()
-        semver.bump_patch()
-        semver.bump_commits()
-        semver.bump_minor()
-        semver.bump_patch()
+def test_semantic_version_bump_minor(starting_version):
 
-        assert str(semver) == expected_version
+    expected_version = "0.4.1.0"
 
-    def test_semantic_version_bump_patch(self):
+    semver = starting_version
 
-        expected_version = "0.3.4.1"
+    semver.bump_minor()
+    semver.bump_patch()
+    semver.bump_patch()
+    semver.bump_commits()
+    semver.bump_minor()
+    semver.bump_patch()
 
-        semver = SemanticVersion(
-            major=0,
-            minor=2,
-            patch=1,
-            commits=0,
-        )
+    assert str(semver) == expected_version
 
-        semver.bump_minor()
-        semver.bump_patch()
-        semver.bump_patch()
-        semver.bump_commits()
-        semver.bump_patch()
-        semver.bump_patch()
-        semver.bump_commits()
 
-        assert str(semver) == expected_version
+def test_semantic_version_bump_patch(starting_version):
+
+    expected_version = "0.3.4.1"
+
+    semver = starting_version
+
+    semver.bump_minor()
+    semver.bump_patch()
+    semver.bump_patch()
+    semver.bump_commits()
+    semver.bump_patch()
+    semver.bump_patch()
+    semver.bump_commits()
+
+    assert str(semver) == expected_version
