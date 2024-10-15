@@ -1,0 +1,10 @@
+78bec30;;;;;;;;78bec30358763fc1fb310050042af79ec3172db0;;;;;;;;1700517302;;;;;;;;Changed gitversion (#10);;;;;;;;HEAD -> main, origin/main, origin/HEAD
+512fd3d;;;;;;;;512fd3dd0708a9f4038358fa982a9b80a923b585;;;;;;;;1667960532;;;;;;;;test adding minor change (#9);;;;;;;;
+93ce15c;;;;;;;;93ce15cf4f92d45c0e42a0bcb888a2b1b722417f;;;;;;;;1667960372;;;;;;;;Feature/123123 last test +docs (#8);;;;;;;;
+84b020d;;;;;;;;84b020d46cc996a4eaad348970cbd5c2ecdbdd33;;;;;;;;1667959617;;;;;;;;test PR one more time +semver: docs (#7);;;;;;;;tag: something, tag: 0.6.25
+dbcc511;;;;;;;;dbcc5119a3d67fea7f5ffdb66975ede9fe0c340f;;;;;;;;1667959055;;;;;;;;changed gitversion config (#6);;;;;;;;
+a524033;;;;;;;;a52403387b1e58f3ef3d24fee3c602aa3c36aabb;;;;;;;;1667957378;;;;;;;;changed readme and gitversion config (#5);;;;;;;;tag: 0.5.13
+03234de;;;;;;;;03234de2eab7bb56a78bbfa8680bb08cbd4d7f7f;;;;;;;;1667956010;;;;;;;;Feature/another test from develop (#3);;;;;;;;
+854d4c4;;;;;;;;854d4c4c3656a8326fc175063a422a7fae7cb501;;;;;;;;1667955908;;;;;;;;Feature/test more (#2);;;;;;;;
+b0337c8;;;;;;;;b0337c8de8ff540641c98ba726b015a3b4efbe6a;;;;;;;;1667954471;;;;;;;;added empty README (#1);;;;;;;;
+6fc7e3f;;;;;;;;6fc7e3f3c65e7ff7eeb8c03a4ad1b3e2355f9f42;;;;;;;;1667953949;;;;;;;;Setup repo;;;;;;;;

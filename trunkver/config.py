@@ -34,17 +34,6 @@ class ConfigFile:
 
 class Config:
     DEFAULT_PATH = "."
-    DEFAULT_MAJOR_REGEX = r"\+(breaking|major)\b"
-    DEFAULT_MINOR_REGEX = r"\+(feature|minor)\b"
-    DEFAULT_PATCH_REGEX = r"\+(fix|patch|docs|ci)\b"
-    DEFAULT_SKIP_REGEX = r"\+(none|skip)\b"
-
-    DEFAULT_SEMVER_TAG_REGEX = r"[vV]?([\d]+)\.([\d]+)\.([\d]+)\.?([\d]+)?"
-
-    DEFAULT_MAIN_BRANCH_REGEX = r"^master$|^main$"
-    DEFAULT_FEATURE_BRANCH_REGEX = r"^feature[/-][a-z]{2,}[a-zA-Z0-9._-]+$"
-    DEFAULT_PR_BRANCH_REGEX = r"^(pull|pull\-requests|pr)[/-]"
-
     COMMIT_FIELD_SEPARATOR = ";;;;;;;;"
     COMMIT_REGEX = (
         r"(.*)"
@@ -62,8 +51,17 @@ class Config:
         pass
 
     def _read_config(self):
-        with open(self.file_path, "r") as stream:
-            return yaml.safe_load(stream)
+        try:
+            with open(self.file_path, "r") as stream:
+                logger.debug("Config file found at '{}':".format(self.file_path))
+                return yaml.safe_load(stream)
+        except FileNotFoundError:
+            logger.debug(
+                "Config file not found at '{}'. Using default values:".format(
+                    self.file_path
+                )
+            )
+            return ConfigFile.DEFAULT.copy()
 
     @property
     def file_path(self):
@@ -77,8 +75,6 @@ class Config:
         logger.debug(config_default)
 
         config_read = self._read_config()
-
-        logger.debug("Config read from '{}':".format(self.file_path))
         logger.debug(config_read)
 
         config_regex_patterns = {

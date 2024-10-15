@@ -1,2 +1,0 @@
-class GitRepositoryNotExistsError(Exception):
-    pass

@@ -3,6 +3,7 @@ import logging
 from argparse import ArgumentParser, Namespace
 from importlib.metadata import version
 from os import getenv
+from .errors import ConfigurationFileNotFoundError, GitRepositoryNotExistsError
 from .git_reader import GitRepositoryReader
 from .git_repository import GitRepository
 from .config import config
@@ -35,6 +36,12 @@ def get_cli_args() -> Namespace:
         help="Generate trunkver configuration file (file will be created at working directory or, if --path argument is set, --path will be used as target path instead)",
     )
     parser.add_argument(
+        "--rec",
+        "-r",
+        action="store_true",
+        help="Generate testing input",
+    )
+    parser.add_argument(
         "--version", "-v", action="version", version=version("trunkver")
     )
     parser.add_argument(
@@ -49,21 +56,35 @@ def run():
 
     setup_logger(debug_flag=args.debug)
     logger = logging.getLogger(__name__)
+    try:
 
-    logger.debug(args)
+        logger.debug(args)
 
-    if args.init:
-        config.generate_config_file(path=args.path)
-        return
+        if args.init:
+            config.generate_config_file(path=args.path)
+            return
 
-    config.load(path=args.path)
+        config.load(path=args.path)
 
-    git_repo_reader = GitRepositoryReader(args.path)
-    repo = GitRepository(
-        branch_name=git_repo_reader.read_branch_name(),
-        commit_lines=git_repo_reader.read_commit_lines(
+        git_repo_reader = GitRepositoryReader(args.path)
+        branch_name = git_repo_reader.read_branch_name()
+        commit_lines = git_repo_reader.read_commit_lines(
             sep=config.COMMIT_FIELD_SEPARATOR
-        ),
-    )
+        )
 
-    print(repo.version)
+        if args.rec:
+            print("\n".join(commit_lines))
+            return
+
+        repo = GitRepository(
+            branch_name=branch_name,
+            commit_lines=commit_lines,
+        )
+
+        print(repo.version)
+    except GitRepositoryNotExistsError:
+        logger.exception("Folder is not a GIT repository")
+    except FileNotFoundError:
+        logger.error(
+            "Trunkver configuration file not found, use --init to generate one"
+        )

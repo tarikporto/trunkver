@@ -22,7 +22,7 @@ class GitRepositoryReader:
             == 0
         )
 
-    def read_commit_lines(self, sep=":::") -> List[str]:
+    def read_commit_lines(self, sep=":::") -> str:
         return (
             check_output(
                 [

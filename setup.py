@@ -16,7 +16,7 @@ setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/tarikporto/trunkver",
-    py_modules=["app"],
+    # py_modules=["app"],
     packages=find_packages(),
     install_requires=[requirements],
     python_requires=">=3.7",
@@ -26,6 +26,6 @@ setup(
     ],
     entry_points="""
         [console_scripts]
-        trunkver=app:run
+        trunkver=trunkver:run
     """,
 )
