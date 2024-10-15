@@ -18,12 +18,14 @@
         "editor.tabSize": 2,
         "editor.insertSpaces": true,
         "python.defaultInterpreterPath": "/workspace/.venv/bin/python",
+        "python.testing.pytestEnabled": true,
+        "python.testing.cwd": "/workspace/tests",
         "[python]": {
           "editor.defaultFormatter": "ms-python.black-formatter",
           "editor.formatOnSave": true,
           "editor.tabSize": 4
-        },
-        "black-formatter.interpreter": ["/workspace/.venv/bin/python"]
+        }
+        // "black-formatter.interpreter": ["/workspace/.venv/bin/python"]
       }
     }
   },

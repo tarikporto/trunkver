@@ -1,6 +1,5 @@
 import pytest
 from tests import get_log_files, load_test_config, StaticLogFile
-from trunkver.config import config
 from trunkver.git_repository import GitRepository
 
 
@@ -21,16 +20,10 @@ def git_repo_gitversion_main():
 def test_git_repository_semver(git_repo_semver_main):
 
     expected_version = "0.2.1.0"
-
-    git_repo = git_repo_semver_main
-
-    assert git_repo.version == expected_version
+    assert git_repo_semver_main.version == expected_version
 
 
 def test_git_repository_gitversion(git_repo_gitversion_main):
 
     expected_version = "0.6.26.2"
-
-    git_repo = git_repo_gitversion_main
-
-    assert git_repo.version == expected_version
+    assert git_repo_gitversion_main.version == expected_version
