@@ -17,9 +17,6 @@ cat <<EOF > ~/.pypirc
   password = $PYPI_TEST_TOKEN
 EOF
 
-python -m venv "$repo_root_dir/.venv"
-source "$repo_root_dir/.venv/bin/activate"
-
-pip install --upgrade pip
-pip install black wheel setuptools twine pytest
-pip install -r "$repo_root_dir/requirements.txt"
+uv sync
+# python -m venv "$repo_root_dir/.venv"
+# source "$repo_root_dir/.venv/bin/activate"

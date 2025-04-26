@@ -1,12 +1,11 @@
 import logging
-
-from argparse import ArgumentParser, Namespace
+import argparse
 from importlib.metadata import version
 from os import getenv
-from .errors import ConfigurationFileNotFoundError, GitRepositoryNotExistsError
 from .git_reader import GitRepositoryReader
 from .git_repository import GitRepository
 from .config import config
+from . import errors
 
 
 def setup_logger(debug_flag=False):
@@ -19,8 +18,8 @@ def setup_logger(debug_flag=False):
     )
 
 
-def get_cli_args() -> Namespace:
-    parser = ArgumentParser(description="Calculates repository version.")
+def get_cli_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Calculates repository version.")
 
     parser.add_argument(
         "--path",
@@ -57,7 +56,6 @@ def run():
     setup_logger(debug_flag=args.debug)
     logger = logging.getLogger(__name__)
     try:
-
         logger.debug(args)
 
         if args.init:
@@ -82,7 +80,7 @@ def run():
         )
 
         print(repo.version)
-    except GitRepositoryNotExistsError:
+    except errors.GitRepositoryNotExistsError:
         logger.exception("Folder is not a GIT repository")
     except FileNotFoundError:
         logger.error(
